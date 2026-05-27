@@ -1,36 +1,16 @@
-import { useState, useEffect, useCallback } from 'react'
-import { getExpenses } from './api'
+import { useState, useCallback } from 'react'
 import ExpenseForm from './components/ExpenseForm'
 import ExpenseFilter from './components/ExpenseFilter'
 import ExpenseList from './components/ExpenseList'
 import './App.css'
 
 function App() {
-  const [expenses, setExpenses] = useState([])
   const [categoryFilter, setCategoryFilter] = useState('')
-  const [error, setError] = useState('')
+  const [refreshKey, setRefreshKey] = useState(0)
 
-  const loadExpenses = useCallback(async () => {
-    try {
-      setError('')
-      const data = await getExpenses(categoryFilter)
-      setExpenses(data)
-    } catch (err) {
-      setError(err.message)
-    }
-  }, [categoryFilter])
-
-  useEffect(() => {
-    loadExpenses()
-  }, [loadExpenses])
-
-  function onExpenseAdded() {
-    loadExpenses()
-  }
-
-  function onExpenseDeleted() {
-    loadExpenses()
-  }
+  const triggerRefresh = useCallback(() => {
+    setRefreshKey((k) => k + 1)
+  }, [])
 
   return (
     <div className="app">
@@ -39,15 +19,14 @@ function App() {
       </header>
 
       <main className="app-main">
-        <ExpenseForm onSuccess={onExpenseAdded} />
+        <ExpenseForm onSuccess={triggerRefresh} />
         <ExpenseFilter
           current={categoryFilter}
           onChange={setCategoryFilter}
         />
-        {error && <p className="error">{error}</p>}
         <ExpenseList
-          expenses={expenses}
-          onDeleted={onExpenseDeleted}
+          key={refreshKey}
+          categoryFilter={categoryFilter}
         />
       </main>
     </div>
