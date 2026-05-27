@@ -1,14 +1,12 @@
 const { Router } = require("express");
 const Expense = require("../models/Expense");
+const validateExpense = require("../middleware/validateExpense");
 
 const router = Router();
 
-router.post("/", async (req, res) => {
+router.post("/", validateExpense, async (req, res) => {
   try {
     const { amount, category, description } = req.body;
-    if (!amount || !category) {
-      return res.status(400).json({ error: "amount and category are required" });
-    }
     const expense = await Expense.create({ amount, category, description });
     res.status(201).json(expense);
   } catch (err) {
