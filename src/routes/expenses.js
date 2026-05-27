@@ -1,41 +1,24 @@
 const { Router } = require("express");
-const Expense = require("../models/Expense");
 const validateExpense = require("../middleware/validateExpense");
+const {
+  createExpense,
+  getAllExpenses,
+  getExpensesByCategory,
+  deleteExpense,
+} = require("../controllers/expensesController");
 
 const router = Router();
 
-router.post("/", validateExpense, async (req, res) => {
-  try {
-    const { amount, category, description } = req.body;
-    const expense = await Expense.create({ amount, category, description });
-    res.status(201).json(expense);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+router.post("/", validateExpense, createExpense);
+
+router.get("/", (req, res) => {
+  if (req.query.category) {
+    req.params.category = req.query.category;
+    return getExpensesByCategory(req, res);
   }
+  getAllExpenses(req, res);
 });
 
-router.get("/", async (_req, res) => {
-  try {
-    const { category } = _req.query;
-    const expenses = category
-      ? await Expense.findByCategory(category)
-      : await Expense.findAll();
-    res.json(expenses);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-router.delete("/:id", async (req, res) => {
-  try {
-    const deleted = await Expense.delete(req.params.id);
-    if (!deleted) {
-      return res.status(404).json({ error: "Expense not found" });
-    }
-    res.json({ message: "Expense deleted" });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
+router.delete("/:id", deleteExpense);
 
 module.exports = router;
