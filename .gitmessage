@@ -1,0 +1,10 @@
+# <type>: <subject>
+# 
+# Types: feat, fix, chore, refactor, docs, test, style
+# Examples:
+#   feat: add expenses CRUD endpoints
+#   fix: validate amount as number in POST /expenses
+#   chore: initial commit with API setup, routes, models, Docker, and README
+# 
+# Keep subject under 50 chars. Use body for details.
+# 
