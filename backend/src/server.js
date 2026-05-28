@@ -1,7 +1,7 @@
 require("dotenv").config();
 
 const express = require("express");
-const testConnection = require("./testConnection");
+const db = require("./db");
 const expensesRouter = require("./routes/expenses");
 const logger = require("./middleware/logger");
 const errorHandler = require("./middleware/errorHandler");
@@ -20,7 +20,7 @@ app.use("/expenses", expensesRouter);
 
 app.use(errorHandler);
 
-app.listen(port, async () => {
+app.listen(port, () => {
   console.log(`Server running on port ${port}`);
-  await testConnection();
+  db.connectWithRetry();
 });
