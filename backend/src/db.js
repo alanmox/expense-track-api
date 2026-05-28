@@ -15,6 +15,17 @@ async function connectWithRetry() {
     try {
       const conn = await pool.getConnection();
       await conn.ping();
+
+      await conn.execute(`
+        CREATE TABLE IF NOT EXISTS expenses (
+          id INT AUTO_INCREMENT PRIMARY KEY,
+          amount DECIMAL(10, 2) NOT NULL,
+          category VARCHAR(255) NOT NULL,
+          description TEXT,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+      `);
+
       conn.release();
       console.log("Database connected successfully");
       return;
