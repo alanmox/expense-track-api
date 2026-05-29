@@ -13,7 +13,7 @@ app.use(express.json());
 app.use(logger);
 
 app.get("/", (_req, res) => {
-  res.json({ message: "Expense Track API" });
+  res.json({ message: "Expense Track API is running properly..." });
 });
 
 app.use("/expenses", expensesRouter);
