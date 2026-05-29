@@ -29,8 +29,8 @@ async function connectWithRetry() {
       conn.release();
       console.log("Database connected successfully");
       return;
-    } catch {
-      console.log("Trying to connect to database...");
+    } catch (error) {
+      console.log("Trying to connect to database...", error.message);
       await new Promise((resolve) => setTimeout(resolve, 3000));
     }
   }
